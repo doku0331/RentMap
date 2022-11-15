@@ -1,56 +1,38 @@
 (function ($) {
   $(document).ready(function () {
     initMap();
-
   });
 
-
   function initMap() {
-    const centerPoint = [25.0334722,121.5648333];
-    const zoom = 12 // 0-18
-    const map = L.map("map").setView(centerPoint, zoom);
+    let mapHelper = new MapHelper();
+    const initPoint = [23.97565, 120.9738819];
+    const initZoom = 7;
+    const map = L.map("map").setView(initPoint, initZoom);
 
+    //設定圖層
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
         '© OpenStreetMap <a href="https://www.openstreetmap.org/">OSM</a>',
-      maxZoom: 18,
+      maxZoom: 20,
     }).addTo(map);
 
-    const marker = L.marker(centerPoint);
-    marker.addTo(map);
+    //跳到學校
+    const yzuCoordinate = [24.9703173, 121.2612535];
+    mapHelper.flyToPoint(map, yzuCoordinate, mapHelper.zoom, 3);
+
+    //設定點
     for (const index in yzuHouseData) {
-      createPin(yzuHouseData[index], map);
+      const pin = mapHelper.createPin(
+        map,
+        yzuHouseData[index],
+        Icons.GREENICON
+      );
+
+      if (!pin) continue;
+      $(pin).on("click", function (e) {
+        debugger;
+        mapHelper.setCircle(map, pin, 400)
+      });
     }
   }
-  
-  /**
-   * 創立一個圖標
-   * @param {*} houseInfo 房屋資訊
-   * @param {*} map 地圖本體
-   */
-  function createPin(houseInfo, map) {  
-    if(!houseInfo.latitude || !houseInfo.longitude){
-      console.log(houseInfo.house_address+"不見了")
-      return;
-    }
-    //設座標
-    const center = [houseInfo.latitude, houseInfo.longitude];
-    //訂製圖標的長相
-    const marker = L.marker(center, {
-      title: houseInfo.house_address, 
-    }).addTo(map);
-  }
-
-  function setCircle() {
-    var circle = L.circle(
-        [mylat, mylon],   // 圓心座標
-        range,                // 半徑（公尺）
-        {
-            color: 'blue',      // 線條顏色
-            fillColor: 'blue', // 填充顏色
-            fillOpacity: 0.2   // 透明度
-        }
-    ).addTo(layerGroup);
-}
-
 })($);
