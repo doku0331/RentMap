@@ -4,18 +4,18 @@ body {
   height: 100%;
 }
 
-#container {
-  height: 100%;
+.no-gutters {
+  margin-right: 0;
+  margin-left: 0;
+
+  >.col,
+  >[class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
 }
 
 #map {
-  float: left;
-  width: 80%;
-  height: 100%;
-}
-
-#resultList {
-  float: right;
-  width: 20%;
+  width: 100%;
   height: 100%;
 }
