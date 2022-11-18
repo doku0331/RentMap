@@ -20,6 +20,9 @@
     const yzuCoordinate = [24.9703173, 121.2612535];
     mapHelper.flyToPoint(map, yzuCoordinate, mapHelper.zoom, 3);
 
+    //存搜尋圈圈的範圍
+    let searchCircle = new L.circle();
+
     //設定點
     for (const index in yzuHouseData) {
       const pin = mapHelper.createPin(
@@ -30,8 +33,12 @@
 
       if (!pin) continue;
       $(pin).on("click", function (e) {
-        debugger;
-        mapHelper.setCircle(map, pin, 400)
+        //畫圈圈
+        map.removeLayer(searchCircle);
+        searchCircle =  mapHelper.setCircle(map, pin, 400);
+        map.addLayer(searchCircle);
+        //長危險事件
+        //切換旁邊結果列        
       });
     }
   }
