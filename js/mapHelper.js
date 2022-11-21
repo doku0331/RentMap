@@ -7,9 +7,10 @@ const Icons = {
 /**
  * 地圖幫助物件
  */
-function MapHelper() {
+function MapHelper(map) {
   //縮放度(預設16)
   this.zoom = 16;
+  this.map = map;
 
   var greenIcon = new L.Icon({
     iconUrl:
@@ -34,13 +35,27 @@ function MapHelper() {
   });
 
   /**
+   * 飛到指定位置
+   * @param {Array} latlng 座標
+   * @param {float} zoom 縮放大小
+   * @param {float} time 時間
+   *
+   */
+  this.flyToPoint = function flyToPoint(latlng, zoom, time) {
+    map.flyTo(latlng, zoom || this.zoom, {
+      animate: true, //要不要有動畫效果。
+      duration: time || 0.25, // 移動的時間，預設是 0.25 秒。
+      easeLinearity: 0.5, // 0-1 之間的值，1 代表線性，數字愈小曲線愈彎。
+    });
+  };
+
+  /**
    * 創立一個圖標
    * @param {*} houseInfo 房屋資訊
-   * @param {*} map 地圖本體
    * @param {Icons} icon 要哪種icon
    *
    */
-  this.createPin = function createPin(map, houseInfo, icon) {
+  this.createPin = function createPin(houseInfo, icon) {
     if (!houseInfo.latitude || !houseInfo.longitude) {
       console.log(houseInfo.house_address + "不見了");
       return;
@@ -59,23 +74,27 @@ function MapHelper() {
   };
 
   /**
-   * 飛到指定位置
-   * @param {*} map 地圖
+   * 劃出一個label
    * @param {Array} latlng 座標
+   * @param {string} labelText label的字
+   * @param {string} labelClass label的class
+   * @returns {L.divIcon}
    */
-  this.flyToPoint = function flyToPoint(map, latlng, zoom, time) {
-    map.flyTo(latlng, zoom || this.zoom, {
-      animate: true, //要不要有動畫效果。
-      duration: time || 0.25, // 移動的時間，預設是 0.25 秒。
-      easeLinearity: 0.5, // 0-1 之間的值，1 代表線性，數字愈小曲線愈彎。
-    });
+  this.createLabel = function createLabel(latlng, labelText, labelClass) {
+    L.marker(latlng, {
+      icon: L.divIcon({
+        className: labelClass || "labelClass",
+        html: labelText,
+      }),
+    }).addTo(map);
   };
-
   /**
-   * 
-   * @param {L.marker} pin 
+   * 畫一個圓
+   * @param {L.marker} pin 圖標
+   * @param {*} range 需要的大小(不傳的話預設500)
+   * @returns 圓圈圈
    */
-  this.setCircle = function setCircle(map, pin, range) {
+  this.setCircle = function setCircle(pin, range) {
     var circle = L.circle(
       pin.getLatLng(), // 圓心座標
       range || 500, // 半徑（公尺）
@@ -88,32 +107,33 @@ function MapHelper() {
     return circle;
   };
   /**
-   * 求兩距離
-   * @param {*} lat1 經度
-   * @param {*} lng1 緯度
-   * @param {*} lat2 經度
-   * @param {*} lng2 緯度
-   * @returns 
+   * 求AB兩距離
+   * https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
+   * @param {Array} latLng1 A點座標
+   * @param {Array} latLng2 B點座標
+   * @returns
    */
-  this.distanceByLnglat = function distanceByLnglat(lat1, lng1, lat2, lng2) {
-    var radLat1 = Rad(lat1);
-    var radLat2 = Rad(lat2);
-    var a = radLat1 - radLat2;
-    var b = Rad(lng1) - Rad(lng2);
-    var s =
-      2 *
-      Math.asin(
-        Math.sqrt(
-          Math.pow(Math.sin(a / 2), 2) +
-            Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)
-        )
-      );
-    s = s * 6378137.0; // 取WGS84標準參考橢球中的地球長半徑(單位:m)
-    s = Math.round(s * 10000) / 10000;
-    return s;
-    // //下面為兩點間空間距離（非球面體）
-    // var value= Math.pow(Math.pow(lng1-lng2,2)+Math.pow(lat1-lat2,2),1/2);
-    // alert(value);
+  this.distanceByLnglat = function distanceByLnglat(latLng1, latLng2) {
+    const deg2rad = (d) => {
+      return (d * Math.PI) / 180.0;
+    };
+    lat1 = latLng1[0];
+    lon1 = latLng1[1];
+    lat2 = latLng2[0];
+    lon2 = latLng2[1];
+
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2 - lat1); // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in km
+    return d;
   };
 
   /**
