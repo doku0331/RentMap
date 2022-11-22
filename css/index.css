@@ -21,7 +21,6 @@ body {
 }
 
 #infoRateBlock {
-  overflow: hidden;
   position: absolute;
   bottom: 0px;
   width: 100%;
@@ -37,6 +36,8 @@ body {
   overflow-y: scroll;
   background-color: gray;
 }
+
+
 
 .labelClass {
   white-space: nowrap;

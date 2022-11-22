@@ -51,24 +51,19 @@ function MapHelper(map) {
 
   /**
    * 創立一個圖標
-   * @param {*} houseInfo 房屋資訊
-   * @param {Icons} icon 要哪種icon
-   *
+   * @param {*} latLng 座標
+   * @param {string} title 標題
+   * @param {string} popUpHtml 彈出來的html
+   * @param {Icons} icon 指定哪種icon
+   * @returns marker
    */
-  this.createPin = function createPin(houseInfo, icon) {
-    if (!houseInfo.latitude || !houseInfo.longitude) {
-      console.log(houseInfo.house_address + "不見了");
-      return;
-    }
-    //設座標
-    const center = [houseInfo.latitude, houseInfo.longitude];
-
+  this.createPin = function createPin(latLng, title, popUpHtml, icon) {
     //訂製圖標的長相
-    const marker = L.marker(center, {
-      title: houseInfo.house_address,
+    const marker = L.marker(latLng, {
+      title: title,
       icon: getIcon(icon),
     })
-      .bindPopup(houseInfo.house_address)
+      .bindPopup(popUpHtml)
       .addTo(map);
     return marker;
   };
