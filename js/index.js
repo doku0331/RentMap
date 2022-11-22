@@ -30,7 +30,11 @@
     loadHouseData(houseUrl, yzuHouseData);
   }
 
-  //載入房屋資料
+  /**
+   * 載入房屋資料
+   * @param {*} url 房屋詳細資訊的url
+   * @param {Array} houseData 房屋的資料
+   */
   function loadHouseData(url, houseData) {
     //設定點
     for (const index in houseData) {
