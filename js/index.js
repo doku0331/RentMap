@@ -1,11 +1,17 @@
 (function ($) {
+  //共用變數
+  let map;
+  let mapHelper;
+  const $infoCardBlock = $("#infoCardBlock");
+
   $(document).ready(function () {
     initMap();
     loadData();
   });
-  let map;
-  let mapHelper;
 
+  /**
+   * 初始化地圖物件
+   */
   function initMap() {
     const initPoint = [23.97565, 120.9738819];
     const initZoom = 7;
@@ -19,6 +25,7 @@
     }).addTo(map);
   }
 
+  //載入資料
   function loadData() {
     //跳到學校
     const yzuCoordinate = [24.9703173, 121.2612535];
@@ -75,18 +82,72 @@
     }
   }
 
+  function LoadEventOfPin(pinLatLng, range, eventData) {
+    const eventHtmlArray = [];
+
+    eventData.forEach((data) => {
+      //算出距離
+      const latlng = [data.latitude, data.longitude];
+      const distance = mapHelper.distanceByLnglat(pinLatLng, latlng);
+      if (distance > range) return;
+
+      const descriptionHtml = `
+        <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">${data.address}</h5>
+              <p class="card-text">
+                描述:${data.description}
+              </p>
+            </div>
+          </div>
+      `;
+
+      const eventPin = mapHelper.createPin(
+        latlng,
+        data.address,
+        descriptionHtml,
+        Icons.REDICON
+      );
+      eventHtmlArray.push(descriptionHtml);
+      eventPins.push(eventPin);
+    });
+    //畫出事件區
+    eventHtmlArray.forEach(function (item, index) {
+      const $infoCard = $(item);
+      $infoCardBlock.append($infoCard);
+      //事件區點選會做的事情
+      $infoCard.click(() => {
+        eventPins[index].openPopup();
+        //TODO: 可以補上畫線線
+      });
+    });
+  }
+
+  function LoadFacilitiesOfPin() {}
+
   //事件區
 
   //存搜尋圈圈的範圍
   let searchCircle = new L.circle();
+  //存危險事件的圖標陣列
+  let eventPins = [];
   //房屋點事件
   function housePinEvent(e) {
     let pin = e.target;
+    let pinLatLng = [pin.getLatLng().lat, pin.getLatLng().lng];
+    let range = 400;
     //畫圈圈
     map.removeLayer(searchCircle);
-    searchCircle = mapHelper.setCircle(pin, 400);
+    searchCircle = mapHelper.setCircle(pin, range);
     map.addLayer(searchCircle);
-    //長危險事件
-    //切換旁邊結果列
+
+    //長危險事件前 先清除事件區和上一次的危險事件
+    eventPins.forEach((pin) => {
+      map.removeLayer(pin);
+    });
+    eventPins = [];
+    $infoCardBlock.children().remove();
+
+    LoadEventOfPin(pinLatLng, range, dangerousData);
   }
 })($);
