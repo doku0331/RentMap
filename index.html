@@ -2,9 +2,9 @@
 <html lang="zh-TW">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>租屋安心地圖</title>
   <!-- jquery 3.6.1 -->
   <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
@@ -24,19 +24,26 @@
     integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
     crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/index.css">
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+  <link rel="stylesheet" href="css/index.css" />
   <!-- 通用調整的js -->
   <script>
     (function ($) {
       $(document).ready(function () {
         //在載入與變換寬度的時候重新計算內容高度
-        $('#container').css("height", $(window).height() - parseFloat($(".navbar").css("height")))
+        $("#container").css(
+          "height",
+          $(window).height() - parseFloat($(".navbar").css("height"))
+        );
 
         $(window).resize(function () {
-          $('#container').css("height", $(window).height() - parseFloat($(".navbar").css("height")))
-        })
+          $("#container").css(
+            "height",
+            $(window).height() - parseFloat($(".navbar").css("height"))
+          );
+        });
       });
+      //alert("本網頁係根據雲端生活租屋網的資料彙整與視覺化統整")
     })($);
   </script>
 </head>
@@ -56,12 +63,11 @@
     <!-- 選單項目 -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <form class="form-inline">
-        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search
-        </button>
+        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
+        <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
+      <button class="btn btn-outline-success" type="submit">設定</button>
     </div>
-
   </nav>
   <!-- 主要內容 -->
   <div id="container">
@@ -74,19 +80,21 @@
       <div class="col-sm-12 col-md-3">
         <!-- 資訊區 -->
         <div id="infoCardBlock">
-          <p style="text-align: center; color:white;">請點選畫面上的租屋點查看周圍危險環境</p>
+          <p style="text-align: center; color: white">
+            請點選畫面上的租屋點查看周圍危險環境
+          </p>
         </div>
-        <!-- 評分區 -->
-        <div id="infoRateBlock" class="text-white bg-success">
-          <h5 class="card-title">評分</h5>
-          <p class="card-text">10/100</p>
-          <a href="#" class="btn btn-primary">查看詳細評分標準</a>
+        <!-- 功能區 -->
+        <div id="infoBlock" class="card text-white bg-success">
+          <div class="card-header">
+            功能
+          </div>
+          <a class="btn btn-primary">查看詳細評分標準</a>
+          <a id="checkAnotherHouseBtn" class="btn btn-primary">查看其他房子</a>
         </div>
       </div>
     </div>
   </div>
-
-
 
   <!-- data -->
   <script src="data/yzuHouseData.js"></script>
@@ -95,7 +103,6 @@
   <!-- js -->
   <script src="js/mapHelper.js"></script>
   <script src="js/index.js"></script>
-
 </body>
 
 </html>

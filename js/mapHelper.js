@@ -62,9 +62,7 @@ function MapHelper(map) {
     const marker = L.marker(latLng, {
       title: title,
       icon: getIcon(icon),
-    })
-      .bindPopup(popUpHtml)
-      .addTo(map);
+    }).bindPopup(popUpHtml);
     return marker;
   };
 
@@ -76,13 +74,15 @@ function MapHelper(map) {
    * @returns {L.divIcon}
    */
   this.createLabel = function createLabel(latlng, labelText, labelClass) {
-    L.marker(latlng, {
+    const label = L.marker(latlng, {
       icon: L.divIcon({
         className: labelClass || "labelClass",
         html: labelText,
       }),
-    }).addTo(map);
+    });
+    return label;
   };
+
   /**
    * 畫一個圓
    * @param {L.marker} pin 圖標
@@ -90,7 +90,7 @@ function MapHelper(map) {
    * @returns 圓圈圈
    */
   this.setCircle = function setCircle(pin, range) {
-    var circle = L.circle(
+    const circle = L.circle(
       pin.getLatLng(), // 圓心座標
       range || 500, // 半徑（公尺）
       {
@@ -98,9 +98,21 @@ function MapHelper(map) {
         fillColor: "blue", // 填充顏色
         fillOpacity: 0.2, // 透明度
       }
-    ).addTo(map);
+    );
     return circle;
   };
+
+  /**
+   * 畫一條線
+   * @param {*} latLngs 形成線的座標陣列
+   * @param {*} color 顏色
+   * @returns 線
+   */
+  this.setLine = function setLine(latLngs, color) {
+    const polyline = L.polyline(latLngs, { color: color });
+    return polyline;
+  };
+
   /**
    * 求AB兩距離
    * https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula

@@ -1,4 +1,4 @@
-var dangerousData = [
+var yzuDangerousData = [
   {
     address: "最左邊XXX路口",
     description: "這裡發生了危險事故",

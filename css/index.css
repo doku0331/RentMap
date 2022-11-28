@@ -31,14 +31,12 @@ body {
   background-color: gray;
 }
 
-#infoRateBlock {
+#infoBlock {
   position: absolute;
   bottom: 0px;
   width: 100%;
   height: 20%;
   background-color: gray;
-  border-radius: 1%;
-  text-align: center;
 }
 
 

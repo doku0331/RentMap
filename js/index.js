@@ -3,7 +3,9 @@
   let map;
   let mapHelper;
   const $infoCardBlock = $("#infoCardBlock");
-
+  let houseData = yzuHouseData;
+  let facilitiesData = yzuFacilitiesData;
+  let dangerousData = yzuDangerousData;
   $(document).ready(function () {
     initMap();
     loadData();
@@ -34,7 +36,8 @@
     const school = "YZU";
     const houseUrl = `http://house.nfu.edu.tw/${school}/`;
     //載入房屋資料
-    loadHouseData(houseUrl, yzuHouseData);
+    loadHouseData(houseUrl, houseData);
+    LoadFacilitiesData(facilitiesData);
   }
 
   /**
@@ -75,13 +78,20 @@
         houseHtml,
         Icons.GREENICON
       );
-
+      houseFeatureGroup.addLayer(pin);
       if (!pin) continue;
 
       $(pin).on("click", housePinEvent);
     }
+    houseFeatureGroup.addTo(map);
   }
 
+  /**
+   * 載入事件資料
+   * @param {*} pinLatLng 中心點的房屋的座標
+   * @param {*} range 範圍大小
+   * @param {*} eventData 事件的資料
+   */
   function LoadEventOfPin(pinLatLng, range, eventData) {
     const eventHtmlArray = [];
 
@@ -96,7 +106,8 @@
             <div class="card-body">
               <h5 class="card-title">${data.address}</h5>
               <p class="card-text">
-                描述:${data.description}
+                描述:${data.description}<br>
+                距離:${Math.floor(distance)}公尺
               </p>
             </div>
           </div>
@@ -108,6 +119,7 @@
         descriptionHtml,
         Icons.REDICON
       );
+      deleteFeatureGroup.addLayer(eventPin);
       eventHtmlArray.push(descriptionHtml);
       eventPins.push(eventPin);
     });
@@ -117,37 +129,88 @@
       $infoCardBlock.append($infoCard);
       //事件區點選會做的事情
       $infoCard.click(() => {
+        //點下去會跳資訊
         eventPins[index].openPopup();
-        //TODO: 可以補上畫線線
+        // //畫線
+        // var latlngs = [pinLatLng, eventPins[index].getLatLng()];
+        // let line = mapHelper.setLine(latlngs, "red");
+        // deleteFeatureGroup.addLayer(line);
       });
     });
   }
+  /**
+   * 載入周圍設施的資料
+   * @param {*} facilitiesData 設施的資料
+   */
+  function LoadFacilitiesData(facilitiesData) {
+    facilitiesData.forEach((data) => {
+      const latLng = [data.latitude, data.longitude];
+      const label = mapHelper.createLabel(latLng, data.title);
+      facilitiesFeatureGroup.addLayer(label);
+    });
 
-  function LoadFacilitiesOfPin() {}
+    facilitiesFeatureGroup.addTo(map);
+  }
+
+  /**
+   * 對點下去的房屋，畫上到設施的直線
+   * @param {*} pinLatLng 中心點的座標
+   * @param {*} facilitiesData 設施的資料
+   */
+  function DrawLineToFacilities(pinLatLng, facilitiesData) {
+    facilitiesData.forEach((data) => {
+      const latLng = [data.latitude, data.longitude];
+      var latlngs = [pinLatLng, latLng];
+      let line = mapHelper.setLine(latlngs, "yellow");
+      deleteFeatureGroup.addLayer(line);
+    });
+  }
 
   //事件區
 
-  //存搜尋圈圈的範圍
-  let searchCircle = new L.circle();
   //存危險事件的圖標陣列
   let eventPins = [];
+  //每次點選都會刪除的圖層
+  let deleteFeatureGroup = new L.featureGroup();
+  //房子的圖層
+  let houseFeatureGroup = new L.featureGroup();
+  //設施的圖層
+  let facilitiesFeatureGroup = new L.featureGroup();
+
   //房屋點事件
   function housePinEvent(e) {
+    //清除所有需要被清除的
+    eventPins = [];
+    $infoCardBlock.children().remove();
+    deleteFeatureGroup.clearLayers();
+
     let pin = e.target;
     let pinLatLng = [pin.getLatLng().lat, pin.getLatLng().lng];
     let range = 400;
+
     //畫圈圈
-    map.removeLayer(searchCircle);
     searchCircle = mapHelper.setCircle(pin, range);
-    map.addLayer(searchCircle);
-
-    //長危險事件前 先清除事件區和上一次的危險事件
-    eventPins.forEach((pin) => {
-      map.removeLayer(pin);
-    });
-    eventPins = [];
-    $infoCardBlock.children().remove();
-
+    deleteFeatureGroup.addLayer(searchCircle);
+    //載入危險事件
     LoadEventOfPin(pinLatLng, range, dangerousData);
+    //畫線到重要設施
+    DrawLineToFacilities(pinLatLng, facilitiesData);
+    map.removeLayer(houseFeatureGroup);
+    pin.addTo(map);
+    deleteFeatureGroup.addTo(map);
   }
+  //針對 查看其他房屋的按鈕
+  $("#checkAnotherHouseBtn").click(function (e) {
+    if (map.hasLayer(houseFeatureGroup)) {
+      return;
+    }
+    $infoCardBlock.children().remove();
+    $infoCardBlock.html(` 
+      <p style="text-align: center; color: white">
+        請點選畫面上的租屋點查看周圍危險環境
+      </p>
+    `);
+    deleteFeatureGroup.clearLayers();
+    map.addLayer(houseFeatureGroup);
+  });
 })($);
