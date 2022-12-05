@@ -226,6 +226,7 @@
     `);
     deleteFeatureGroup.clearLayers();
     map.addLayer(houseFeatureGroup);
+    $("#map").click();
   });
 
   //查看詳細資訊的按鈕
