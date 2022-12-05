@@ -85,16 +85,33 @@
           </p>
         </div>
         <!-- 功能區 -->
-        <div id="infoBlock" class="card text-white bg-success">
+        <div id="infoBlock" class="card text-white bg-dark">
           <div class="card-header">
             功能
           </div>
-          <a class="btn btn-primary">查看詳細評分標準</a>
-          <a id="checkAnotherHouseBtn" class="btn btn-primary">查看其他房子</a>
+          <button id="ratingButton" type="button" class="btn btn-success" data-toggle="modal">查看詳細評分標準</button>
+          <button id="checkAnotherHouseBtn" class="btn btn-success">查看其他房子</button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- 評分的詳細資訊 -->
+  <div id="ratingWindow" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">詳細資訊</h5>
+        </div>
+        <div id="ratingWindowContent" class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- data -->
   <script src="data/yzuHouseData.js"></script>

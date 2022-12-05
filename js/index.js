@@ -29,6 +29,8 @@
 
   //載入資料
   function loadData() {
+    //抽出到設定
+
     //跳到學校
     const yzuCoordinate = [24.9703173, 121.2612535];
     mapHelper.flyToPoint(yzuCoordinate, mapHelper.zoom, 2);
@@ -78,8 +80,9 @@
         houseHtml,
         Icons.GREENICON
       );
-      houseFeatureGroup.addLayer(pin);
       if (!pin) continue;
+
+      houseFeatureGroup.addLayer(pin);
 
       $(pin).on("click", housePinEvent);
     }
@@ -167,7 +170,10 @@
   }
 
   //事件區
-
+  //現在點的房屋
+  let nowClickPin;
+  //追蹤可不可以點評分
+  let ratingEnable = false;
   //存危險事件的圖標陣列
   let eventPins = [];
   //每次點選都會刪除的圖層
@@ -179,28 +185,36 @@
 
   //房屋點事件
   function housePinEvent(e) {
+    ratingEnable = true;
     //清除所有需要被清除的
     eventPins = [];
     $infoCardBlock.children().remove();
     deleteFeatureGroup.clearLayers();
 
-    let pin = e.target;
-    let pinLatLng = [pin.getLatLng().lat, pin.getLatLng().lng];
+    nowClickPin = e.target;
+    let pinLatLng = [nowClickPin.getLatLng().lat, nowClickPin.getLatLng().lng];
     let range = 400;
 
     //畫圈圈
-    searchCircle = mapHelper.setCircle(pin, range);
+    searchCircle = mapHelper.setCircle(nowClickPin, range);
     deleteFeatureGroup.addLayer(searchCircle);
+
     //載入危險事件
     LoadEventOfPin(pinLatLng, range, dangerousData);
+
     //畫線到重要設施
     DrawLineToFacilities(pinLatLng, facilitiesData);
+    //清除且保留點選的房屋
     map.removeLayer(houseFeatureGroup);
-    pin.addTo(map);
+    nowClickPin.addTo(map).openPopup();
+
+    //加上下次會被清除的圖層
     deleteFeatureGroup.addTo(map);
   }
+
   //針對 查看其他房屋的按鈕
   $("#checkAnotherHouseBtn").click(function (e) {
+    ratingEnable = false;
     if (map.hasLayer(houseFeatureGroup)) {
       return;
     }
@@ -212,5 +226,31 @@
     `);
     deleteFeatureGroup.clearLayers();
     map.addLayer(houseFeatureGroup);
+  });
+
+  //查看詳細資訊的按鈕
+  $("#ratingButton").click(function (e) {
+    if (!ratingEnable) {
+      alert("請先點選地圖上的房屋點，才能看詳細評分標準喔");
+      return;
+    }
+    $("#ratingWindow").modal("show");
+    //產到重要設施的字串
+    let facilitieString = "";
+    facilitiesData.forEach((data) => {
+      let distance = mapHelper.distanceByLnglat(
+        [data.latitude, data.longitude],
+        [nowClickPin.getLatLng().lat, nowClickPin.getLatLng().lng]
+      );
+      facilitieString += `距離 ${data.title} ${Math.floor(distance)}公尺<br>`;
+    });
+
+    //畫到內容到window上
+    $("#ratingWindowContent").html(`
+      ${nowClickPin.getPopup()._content}
+      ${facilitieString}
+      附近的危險:${eventPins.length}件
+
+    `);
   });
 })($);
