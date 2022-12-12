@@ -5,7 +5,7 @@
   const $infoCardBlock = $("#infoCardBlock");
   let houseData = yzuHouseData;
   let facilitiesData = yzuFacilitiesData;
-  let dangerousData = yzuDangerousData;
+  let dangerousData = taoyuanDangerousData;
   $(document).ready(function () {
     initMap();
     loadData();
@@ -110,6 +110,7 @@
               <h5 class="card-title">${data.address}</h5>
               <p class="card-text">
                 描述:${data.description}<br>
+                類型:${data.danger_type}<br>
                 距離:${Math.floor(distance)}公尺
               </p>
             </div>
@@ -214,10 +215,12 @@
 
   //針對 查看其他房屋的按鈕
   $("#checkAnotherHouseBtn").click(function (e) {
+    nowClickPin.closePopup();
     ratingEnable = false;
     if (map.hasLayer(houseFeatureGroup)) {
       return;
     }
+    //清空資訊區
     $infoCardBlock.children().remove();
     $infoCardBlock.html(` 
       <p style="text-align: center; color: white">
@@ -226,7 +229,6 @@
     `);
     deleteFeatureGroup.clearLayers();
     map.addLayer(houseFeatureGroup);
-    $("#map").click();
   });
 
   //查看詳細資訊的按鈕
@@ -245,6 +247,7 @@
       );
       facilitieString += `距離 ${data.title} ${Math.floor(distance)}公尺<br>`;
     });
+    //TODO: 可以補分類不同的危險地點有幾個
 
     //畫到內容到window上
     $("#ratingWindowContent").html(`

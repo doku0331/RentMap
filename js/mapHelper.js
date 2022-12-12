@@ -22,6 +22,30 @@ function MapHelper(map) {
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
   });
+  var carIcon = new L.Icon({
+    iconUrl: "img/car.svg",
+    iconSize: [25, 41],
+  });
+  var bikeIcon = new L.Icon({
+    iconUrl: "img/bicycle.svg",
+    iconSize: [20, 20],
+  });
+  var accidentIcon = new L.Icon({
+    iconUrl: "img/car-crash-svgrepo-com.svg",
+    iconSize: [20, 20],
+  });
+  var motorcycleIcon = new L.Icon({
+    iconUrl: "img/scooter-svgrepo-com.svg",
+    iconSize: [20, 20],
+  });
+  var thiefIcon = new L.Icon({
+    iconUrl: "img/thief-svgrepo-com.svg",
+    iconSize: [20, 20],
+  });
+  var thiefIcon = new L.Icon({
+    iconUrl: "img/thief-svgrepo-com.svg",
+    iconSize: [20, 20],
+  });
 
   var redIcon = new L.Icon({
     iconUrl:
