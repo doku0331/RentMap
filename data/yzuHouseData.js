@@ -1,3 +1,5 @@
+var yzuCoordinate = [24.9703173, 121.2612535];
+
 var yzuHouseData = [
   {
     house_id: 6337,

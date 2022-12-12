@@ -32,7 +32,6 @@
     //抽出到設定
 
     //跳到學校
-    const yzuCoordinate = [24.9703173, 121.2612535];
     mapHelper.flyToPoint(yzuCoordinate, mapHelper.zoom, 2);
 
     const school = "YZU";
@@ -134,7 +133,7 @@
           iconType = Icons.ACCIDENTICON;
           break;
         default:
-          iconType = "";
+          iconType = Icons.REDICON;
           break;
       }
 
@@ -231,6 +230,7 @@
 
     //畫線到重要設施
     DrawLineToFacilities(pinLatLng, facilitiesData);
+
     //清除且保留點選的房屋
     map.removeLayer(houseFeatureGroup);
     nowClickPin.addTo(map).openPopup();
@@ -316,5 +316,10 @@
       ${dangerousTypeString}
 
     `);
+  });
+
+  //查看
+  $("#settingBtn").click(function (e) {
+    $("#settingWindow").modal("show");
   });
 })($);

@@ -60,14 +60,9 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
       <span class="navbar-toggler-icon"></span>
     </button>
-
     <!-- 選單項目 -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <form class="form-inline">
-        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-      <button class="btn btn-outline-success" type="submit">設定</button>
+      <button id="settingBtn" class="btn btn-outline-success" type="submit">設定</button>
     </div>
   </nav>
   <!-- 主要內容 -->
@@ -114,19 +109,44 @@
     </div>
   </div>
 
+  <!-- 評分的詳細資訊 -->
+  <div id="settingWindow" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">設定</h5>
+        </div>
+        <div class="form-group">
+          <select class="form-control form-control-lg">
+            <option selected>選取一個學校</option>
+            <option value="yzuHouseData">元智大學</option>
+            <option value="cycuHouseData">中原大學</option>
+            <option value="ncuHouseData">中央大學</option>
+            <option value="uchHouseData">健行科技大學</option>
+          </select>
 
-  <!-- data -->
-  <script src="data/yzuHouseData.js"></script>
-  <script src="data/facilitiesData.js"></script>
-  <script src="data/bikeTheft.js"></script>
-  <script src="data/carTheft.js"></script>
-  <script src="data/houseBurglary.js"></script>
-  <script src="data/motorcycleTheft.js"></script>
-  <script src="data/trafficAccident.js"></script>
-  <script src="data/dangerousData.js"></script>
-  <!-- js -->
-  <script src="js/mapHelper.js"></script>
-  <script src="js/index.js"></script>
+
+        </div>
+        <div class="modal-footer">
+          <button id="settingConfirm" type="button" class="btn btn-success">確定</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- data -->
+    <script src="data/yzuHouseData.js"></script>
+    <script src="data/facilitiesData.js"></script>
+    <script src="data/bikeTheft.js"></script>
+    <script src="data/carTheft.js"></script>
+    <script src="data/houseBurglary.js"></script>
+    <script src="data/motorcycleTheft.js"></script>
+    <script src="data/trafficAccident.js"></script>
+    <script src="data/dangerousData.js"></script>
+    <!-- js -->
+    <script src="js/mapHelper.js"></script>
+    <script src="js/index.js"></script>
 </body>
 
 </html>
