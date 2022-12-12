@@ -1,7 +1,13 @@
 const Icons = {
   REDICON: 1,
   GREENICON: 2,
-  DEFAULT: 3,
+  CARICON: 3,
+  BIKEICON: 4,
+  ACCIDENTICON: 5,
+  MOTORCYCLEICON: 6,
+  THIEFICON: 7,
+  HOUSEICON: 8,
+  DEFAULT: 9,
 };
 
 /**
@@ -22,31 +28,6 @@ function MapHelper(map) {
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
   });
-  var carIcon = new L.Icon({
-    iconUrl: "img/car.svg",
-    iconSize: [25, 41],
-  });
-  var bikeIcon = new L.Icon({
-    iconUrl: "img/bicycle.svg",
-    iconSize: [20, 20],
-  });
-  var accidentIcon = new L.Icon({
-    iconUrl: "img/car-crash-svgrepo-com.svg",
-    iconSize: [20, 20],
-  });
-  var motorcycleIcon = new L.Icon({
-    iconUrl: "img/scooter-svgrepo-com.svg",
-    iconSize: [20, 20],
-  });
-  var thiefIcon = new L.Icon({
-    iconUrl: "img/thief-svgrepo-com.svg",
-    iconSize: [20, 20],
-  });
-  var thiefIcon = new L.Icon({
-    iconUrl: "img/thief-svgrepo-com.svg",
-    iconSize: [20, 20],
-  });
-
   var redIcon = new L.Icon({
     iconUrl:
       "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
@@ -56,6 +37,31 @@ function MapHelper(map) {
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
+  });
+
+  var houseIcon = new L.Icon({
+    iconUrl: "img/home-house-svgrepo-com.svg",
+    iconSize: [30, 30],
+  });
+  var carIcon = new L.Icon({
+    iconUrl: "img/car.svg",
+    iconSize: [30, 30],
+  });
+  var bikeIcon = new L.Icon({
+    iconUrl: "img/bicycle.svg",
+    iconSize: [30, 30],
+  });
+  var accidentIcon = new L.Icon({
+    iconUrl: "img/car-crash-svgrepo-com.svg",
+    iconSize: [30, 30],
+  });
+  var motorcycleIcon = new L.Icon({
+    iconUrl: "img/scooter-svgrepo-com.svg",
+    iconSize: [30, 30],
+  });
+  var thiefIcon = new L.Icon({
+    iconUrl: "img/thief-svgrepo-com.svg",
+    iconSize: [30, 30],
   });
 
   /**
@@ -181,8 +187,26 @@ function MapHelper(map) {
       case Icons.GREENICON:
         PinIcon = greenIcon;
         break;
+      case Icons.ACCIDENTICON:
+        PinIcon = accidentIcon;
+        break;
+      case Icons.BIKEICON:
+        PinIcon = bikeIcon;
+        break;
+      case Icons.CARICON:
+        PinIcon = carIcon;
+        break;
+      case Icons.MOTORCYCLEICON:
+        PinIcon = motorcycleIcon;
+        break;
+      case Icons.THIEFICON:
+        PinIcon = thiefIcon;
+        break;
+      case Icons.HOUSEICON:
+        PinIcon = houseIcon;
+        break;
       default:
-        PinIcon = null;
+        PinIcon = "";
         break;
     }
     return PinIcon;

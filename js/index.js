@@ -78,7 +78,7 @@
         latLng,
         data["house_address"],
         houseHtml,
-        Icons.GREENICON
+        Icons.HOUSEICON
       );
       if (!pin) continue;
 
@@ -116,12 +116,33 @@
             </div>
           </div>
       `;
+      let iconType = "";
+      switch (data.danger_type) {
+        case "自行車竊盜":
+          iconType = Icons.BIKEICON;
+          break;
+        case "汽車竊盜":
+          iconType = Icons.CARICON;
+          break;
+        case "住宅竊盜":
+          iconType = Icons.THIEFICON;
+          break;
+        case "機車竊盜":
+          iconType = Icons.MOTORCYCLEICON;
+          break;
+        case "交通事故":
+          iconType = Icons.ACCIDENTICON;
+          break;
+        default:
+          iconType = "";
+          break;
+      }
 
       const eventPin = mapHelper.createPin(
         latlng,
         data.address,
         descriptionHtml,
-        Icons.REDICON
+        iconType
       );
       deleteFeatureGroup.addLayer(eventPin);
       eventHtmlArray.push(descriptionHtml);
