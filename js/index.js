@@ -107,10 +107,10 @@
       const descriptionHtml = `
         <div class="card">
             <div class="card-body">
-              <h5 class="card-title">${data.address}</h5>
+              <h5 class="card-title">${data.danger_type}</h5>
               <p class="card-text">
+                地點:${data.address}<br>
                 描述:${data.description}<br>
-                類型:${data.danger_type}<br>
                 距離:${Math.floor(distance)}公尺
               </p>
             </div>
@@ -144,18 +144,23 @@
         descriptionHtml,
         iconType
       );
+
       deleteFeatureGroup.addLayer(eventPin);
-      eventHtmlArray.push(descriptionHtml);
-      eventPins.push(eventPin);
+
+      eventArray.push({
+        html: descriptionHtml,
+        pin: eventPin,
+        type: data.danger_type,
+      });
     });
     //畫出事件區
-    eventHtmlArray.forEach(function (item, index) {
-      const $infoCard = $(item);
+    eventArray.forEach(function (item, index) {
+      const $infoCard = $(item.html);
       $infoCardBlock.append($infoCard);
       //事件區點選會做的事情
       $infoCard.click(() => {
         //點下去會跳資訊
-        eventPins[index].openPopup();
+        eventArray[index].pin.openPopup();
         // //畫線
         // var latlngs = [pinLatLng, eventPins[index].getLatLng()];
         // let line = mapHelper.setLine(latlngs, "red");
@@ -197,7 +202,7 @@
   //追蹤可不可以點評分
   let ratingEnable = false;
   //存危險事件的圖標陣列
-  let eventPins = [];
+  let eventArray = [];
   //每次點選都會刪除的圖層
   let deleteFeatureGroup = new L.featureGroup();
   //房子的圖層
@@ -209,7 +214,7 @@
   function housePinEvent(e) {
     ratingEnable = true;
     //清除所有需要被清除的
-    eventPins = [];
+    eventArray = [];
     $infoCardBlock.children().remove();
     deleteFeatureGroup.clearLayers();
 
@@ -260,7 +265,7 @@
     }
     $("#ratingWindow").modal("show");
     //產到重要設施的字串
-    let facilitieString = "";
+    let facilitieString = "<h5>附近重要設施距離:</h5>";
     facilitiesData.forEach((data) => {
       let distance = mapHelper.distanceByLnglat(
         [data.latitude, data.longitude],
@@ -269,12 +274,46 @@
       facilitieString += `距離 ${data.title} ${Math.floor(distance)}公尺<br>`;
     });
     //TODO: 可以補分類不同的危險地點有幾個
+    let bikeThiefCount = 0,
+      carThiefCount = 0,
+      houseBurglaryCount = 0,
+      motorcycleThief = 0,
+      trafficAccidentCount = 0;
+    eventArray.forEach((data) => {
+      switch (data.type) {
+        case "自行車竊盜":
+          bikeThiefCount++;
+          break;
+        case "汽車竊盜":
+          carThiefCount++;
+          break;
+        case "住宅竊盜":
+          houseBurglaryCount++;
+          break;
+        case "機車竊盜":
+          motorcycleThief++;
+          break;
+        case "交通事故":
+          trafficAccidentCount++;
+          break;
+        default:
+          break;
+      }
+    });
+
+    let dangerousTypeString = `
+    <h5>附近危險事件統計:</h5>
+    自行車竊盜:${bikeThiefCount}件</br>
+    汽車竊盜:${carThiefCount}件</br>
+    住宅竊盜:${houseBurglaryCount}件</br>
+    機車竊盜:${motorcycleThief}件</br>
+    交通事故:${trafficAccidentCount}件</br>`;
 
     //畫到內容到window上
     $("#ratingWindowContent").html(`
       ${nowClickPin.getPopup()._content}
-      ${facilitieString}
-      附近的危險:${eventPins.length}件
+      ${facilitieString}</br>
+      ${dangerousTypeString}
 
     `);
   });
