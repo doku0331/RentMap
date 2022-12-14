@@ -4645,3 +4645,10 @@ var yzuHouseData = [
     ex_ori_img_path: "data/YZU/images_house/6332x1.jpg",
   },
 ];
+
+var yzuSetting = {
+  coordinate: yzuCoordinate,
+  houseData: yzuHouseData,
+  dangerous: taoyuanDangerousData,
+  facilities: yzuFacilitiesData,
+};

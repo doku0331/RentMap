@@ -9934,3 +9934,10 @@ var uchHouseData = [
     ex_ori_img_path: "data/CYCU/images_house/13371x1_20220920-165621.jpg",
   },
 ];
+
+var uchSetting = {
+  coordinate: uchCoordinate,
+  houseData: uchHouseData,
+  dangerous: taoyuanDangerousData,
+  facilities: uchFacilitiesData,
+};

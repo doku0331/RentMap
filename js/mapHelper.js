@@ -17,6 +17,7 @@ function MapHelper(map) {
   //縮放度(預設16)
   this.zoom = 16;
   this.map = map;
+  this.flyTime = 1;
 
   var greenIcon = new L.Icon({
     iconUrl:

@@ -44,6 +44,8 @@
           );
         });
       });
+
+      //TODO:上線記得上這個
       //alert("本網頁係根據雲端生活租屋網的資料彙整與視覺化統整")
     })($);
   </script>
@@ -62,7 +64,8 @@
     </button>
     <!-- 選單項目 -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <button id="settingBtn" class="btn btn-outline-success" type="submit">設定</button>
+      <button id="settingBtn" class="btn btn-outline-success" data-toggle="modal"
+        data-target="#settingWindow">設定</button>
     </div>
   </nav>
   <!-- 主要內容 -->
@@ -109,7 +112,7 @@
     </div>
   </div>
 
-  <!-- 評分的詳細資訊 -->
+  <!-- 設定視窗 -->
   <div id="settingWindow" class="modal fade" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -117,15 +120,13 @@
           <h5 class="modal-title" id="exampleModalLongTitle">設定</h5>
         </div>
         <div class="form-group">
-          <select class="form-control form-control-lg">
+          <select id="schoolDropDown" class="form-control form-control-lg">
             <option selected>選取一個學校</option>
-            <option value="yzuHouseData">元智大學</option>
-            <option value="cycuHouseData">中原大學</option>
-            <option value="ncuHouseData">中央大學</option>
-            <option value="uchHouseData">健行科技大學</option>
+            <option value="YZU">元智大學</option>
+            <option value="CYCU">中原大學</option>
+            <option value="NCU">中央大學</option>
+            <option value="UCH">健行科技大學</option>
           </select>
-
-
         </div>
         <div class="modal-footer">
           <button id="settingConfirm" type="button" class="btn btn-success">確定</button>
@@ -133,20 +134,24 @@
         </div>
       </div>
     </div>
+  </div>
 
 
-    <!-- data -->
-    <script src="data/yzuHouseData.js"></script>
-    <script src="data/facilitiesData.js"></script>
-    <script src="data/bikeTheft.js"></script>
-    <script src="data/carTheft.js"></script>
-    <script src="data/houseBurglary.js"></script>
-    <script src="data/motorcycleTheft.js"></script>
-    <script src="data/trafficAccident.js"></script>
-    <script src="data/dangerousData.js"></script>
-    <!-- js -->
-    <script src="js/mapHelper.js"></script>
-    <script src="js/index.js"></script>
+  <!-- data -->
+  <script src="data/facilitiesData.js"></script>
+  <script src="data/bikeTheft.js"></script>
+  <script src="data/carTheft.js"></script>
+  <script src="data/houseBurglary.js"></script>
+  <script src="data/motorcycleTheft.js"></script>
+  <script src="data/trafficAccident.js"></script>
+  <script src="data/dangerousData.js"></script>
+  <script src="data/yzuHouseData.js"></script>
+  <script src="data/ncuHouseData.js"></script>
+  <script src="data/cycuHouseData.js"></script>
+  <script src="data/uchHouseData.js"></script>
+  <!-- js -->
+  <script src="js/mapHelper.js"></script>
+  <script src="js/index.js"></script>
 </body>
 
 </html>

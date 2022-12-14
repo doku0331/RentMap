@@ -3,12 +3,15 @@
   let map;
   let mapHelper;
   const $infoCardBlock = $("#infoCardBlock");
-  let houseData = yzuHouseData;
-  let facilitiesData = yzuFacilitiesData;
-  let dangerousData = taoyuanDangerousData;
+
+  let houseData;
+  let facilitiesData;
+  let dangerousData;
+  let schoolCorrdinate;
+
   $(document).ready(function () {
     initMap();
-    loadData();
+    loadData("YZU");
   });
 
   /**
@@ -17,28 +20,57 @@
   function initMap() {
     const initPoint = [23.97565, 120.9738819];
     const initZoom = 7;
+    //設定中心點
     map = L.map("map").setView(initPoint, initZoom);
-    mapHelper = new MapHelper(map);
     //設定圖層
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
         '© OpenStreetMap <a href="https://www.openstreetmap.org/">OSM</a>',
       maxZoom: 20,
     }).addTo(map);
+
+    //初始化地圖幫手
+    mapHelper = new MapHelper(map);
   }
 
   //載入資料
-  function loadData() {
+  function loadData(schoolName) {
     //抽出到設定
-
+    setData(schoolName);
     //跳到學校
-    mapHelper.flyToPoint(yzuCoordinate, mapHelper.zoom, 2);
+    mapHelper.flyToPoint(schoolCorrdinate, mapHelper.zoom, mapHelper.flyTime);
 
-    const school = "YZU";
-    const houseUrl = `http://house.nfu.edu.tw/${school}/`;
+    const houseUrl = `http://house.nfu.edu.tw/${schoolName}/`;
     //載入房屋資料
     loadHouseData(houseUrl, houseData);
     LoadFacilitiesData(facilitiesData);
+  }
+
+  function setData(schoolName) {
+    let setting;
+    switch (schoolName) {
+      case "YZU":
+        setting = yzuSetting;
+        break;
+      case "UCH":
+        setting = uchSetting;
+        break;
+      case "CYCU":
+        setting = cycuSetting;
+        break;
+      case "NCU":
+        setting = ncuSetting;
+        break;
+      default:
+        alert("請選擇想切換的學校");
+        return;
+        break;
+    }
+
+    houseData = setting.houseData;
+    facilitiesData = setting.facilities;
+    dangerousData = setting.dangerous;
+    schoolCorrdinate = setting.coordinate;
   }
 
   /**
@@ -95,8 +127,6 @@
    * @param {*} eventData 事件的資料
    */
   function LoadEventOfPin(pinLatLng, range, eventData) {
-    const eventHtmlArray = [];
-
     eventData.forEach((data) => {
       //算出距離
       const latlng = [data.latitude, data.longitude];
@@ -195,6 +225,16 @@
     });
   }
 
+  /**
+   * 清除點選房屋產生的東西
+   */
+  function clearPinClick() {
+    nowClickPin = null;
+    eventArray = [];
+    $infoCardBlock.children().remove();
+    deleteFeatureGroup.clearLayers();
+  }
+
   //事件區
   //現在點的房屋
   let nowClickPin;
@@ -213,9 +253,7 @@
   function housePinEvent(e) {
     ratingEnable = true;
     //清除所有需要被清除的
-    eventArray = [];
-    $infoCardBlock.children().remove();
-    deleteFeatureGroup.clearLayers();
+    clearPinClick();
 
     nowClickPin = e.target;
     let pinLatLng = [nowClickPin.getLatLng().lat, nowClickPin.getLatLng().lng];
@@ -273,7 +311,6 @@
       );
       facilitieString += `距離 ${data.title} ${Math.floor(distance)}公尺<br>`;
     });
-    //TODO: 可以補分類不同的危險地點有幾個
     let bikeThiefCount = 0,
       carThiefCount = 0,
       houseBurglaryCount = 0,
@@ -318,8 +355,19 @@
     `);
   });
 
-  //查看
-  $("#settingBtn").click(function (e) {
-    $("#settingWindow").modal("show");
+  //設定視窗開啟
+  $("#settingConfirm").click(function (e) {
+    var schoolName = $("#schoolDropDown option:selected").val();
+    $("#settingWindow").modal("hide");
+    //清除pin點選
+    clearPinClick();
+    //清除設施
+    map.removeLayer(facilitiesFeatureGroup);
+    facilitiesFeatureGroup = new L.featureGroup();
+    //清除房子
+    map.removeLayer(houseFeatureGroup);
+    houseFeatureGroup = new L.featureGroup();
+
+    loadData(schoolName);
   });
 })($);
