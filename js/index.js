@@ -8,7 +8,7 @@
   let facilitiesData;
   let dangerousData;
   let schoolCorrdinate;
-
+  let houseUrl;
   $(document).ready(function () {
     initMap();
     loadData("YZU");
@@ -24,8 +24,7 @@
     map = L.map("map").setView(initPoint, initZoom);
     //設定圖層
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution:
-        '© OpenStreetMap <a href="https://www.openstreetmap.org/">OSM</a>',
+      attribution: '© OpenStreetMap <a href="https://www.openstreetmap.org/">OSM</a>',
       maxZoom: 20,
     }).addTo(map);
 
@@ -40,7 +39,7 @@
     //跳到學校
     mapHelper.flyToPoint(schoolCorrdinate, mapHelper.zoom, mapHelper.flyTime);
 
-    const houseUrl = `http://house.nfu.edu.tw/${schoolName}/`;
+    houseUrl = `http://house.nfu.edu.tw/${schoolName}/`;
     //載入房屋資料
     loadHouseData(houseUrl, houseData);
     LoadFacilitiesData(facilitiesData);
@@ -235,6 +234,48 @@
     deleteFeatureGroup.clearLayers();
   }
 
+  /**
+   * 顯示前五名的資料
+   * @param {*} datalist 前五名的資料
+   */
+  function show5TopData(datalist) {
+    datalist.forEach((data, index) => {
+      const latlng = [data.latitude, data.longitude];
+      const houseHtml = `
+      <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+            ${data["house_id"]}-
+            ${
+              data["house_title"] || data["house_desc"]
+            }</h5>
+            <p class="card-text">
+              位置:${data["house_address"]}<br>
+              大小:${data["house_area"]}<br>
+              類型:${data["house_type"]}<br>
+              描述:${data["house_desc"]}<br>
+              租金:${data["rental"]}元<br>
+            </p>
+            <a href="
+            ${houseUrl + data["house_id"]}" 
+            target="_blank">查看原始租屋網站</a>
+          </div>
+        </div>
+    `;
+      const pin = mapHelper.createPin(
+        latlng,
+        data.address,
+        houseHtml,
+        Icons.REDICON
+      );
+      $(pin).on("click", housePinEvent);
+      houseFeatureGroup.addLayer(pin);
+      map.addLayer(houseFeatureGroup);
+    })
+  }
+
+
+
   //事件區
   //現在點的房屋
   let nowClickPin;
@@ -248,6 +289,7 @@
   let houseFeatureGroup = new L.featureGroup();
   //設施的圖層
   let facilitiesFeatureGroup = new L.featureGroup();
+
 
   //房屋點事件
   function housePinEvent(e) {
@@ -355,7 +397,7 @@
     `);
   });
 
-  //設定視窗開啟
+  //設定視窗點確認
   $("#settingConfirm").click(function (e) {
     var schoolName = $("#schoolDropDown option:selected").val();
     $("#settingWindow").modal("hide");
@@ -369,5 +411,75 @@
     houseFeatureGroup = new L.featureGroup();
 
     loadData(schoolName);
+  });
+
+  //排名視窗點確認
+  $("#rankingConfirm").click(function (e) {
+    var rankingType = $("#rankingDropDown option:selected").val();
+
+    //清除pin點選
+    clearPinClick();
+    //清除設施
+    map.removeLayer(facilitiesFeatureGroup);
+    facilitiesFeatureGroup = new L.featureGroup();
+    //清除房子
+    map.removeLayer(houseFeatureGroup);
+    houseFeatureGroup = new L.featureGroup();
+
+
+    let houseTop5;
+    switch (rankingType) {
+      case "distance":
+        //處裡距離排序
+        function distenceCompare(a, b) {
+          if (a.distinceToSchool < b.distinceToSchool) {
+            return -1;
+          }
+          if (a.distinceToSchool > b.distinceToSchool) {
+            return 1;
+          }
+          return 0;
+        }
+        houseData.sort(distenceCompare);
+        houseTop5 = houseData.slice(0, 5);
+        show5TopData(houseTop5);
+        break;
+      case "rent":
+        //處理租金排序
+        function rantalCompare(a, b) {
+          if (a.rental_min < b.rental_min) {
+            return -1;
+          }
+          if (a.rental_min > b.rental_min) {
+            return 1;
+          }
+          return 0;
+        }
+
+        houseData.sort(rantalCompare);
+        houseTop5 = houseData.slice(0, 5);
+        show5TopData(houseTop5);
+        break;
+      case "event":
+        //處理危險排序
+        function dangerousCompare(a, b) {
+          if (a.dangerousCount < b.dangerousCount) {
+            return -1;
+          }
+          if (a.dangerousCount > b.dangerousCount) {
+            return 1;
+          }
+          return 0;
+        }
+        houseData.sort(dangerousCompare);
+        houseTop5 = houseData.slice(0, 5);
+        show5TopData(houseTop5);
+        break;
+
+      default:
+        alert("請選擇一種排序")
+        break;
+    }
+    $("#rankingWindow").modal("hide");
   });
 })($);
