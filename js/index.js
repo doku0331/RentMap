@@ -24,7 +24,8 @@
     map = L.map("map").setView(initPoint, initZoom);
     //設定圖層
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '© OpenStreetMap <a href="https://www.openstreetmap.org/">OSM</a>',
+      attribution:
+        '© OpenStreetMap <a href="https://www.openstreetmap.org/">OSM</a>',
       maxZoom: 20,
     }).addTo(map);
 
@@ -88,10 +89,10 @@
       const houseHtml = `
         <div class="card">
             <div class="card-body">
-              <h5 class="card-title">${
-                data["house_title"] || data["house_desc"]
-              }</h5>
-              <p class="card-text">
+            <h5 class="card-title">${
+              data["house_title"] || data["house_desc"]
+            }</h5>              
+            <p class="card-text">
                 位置:${data["house_address"]}<br>
                 大小:${data["house_area"]}<br>
                 類型:${data["house_type"]}<br>
@@ -234,21 +235,42 @@
     deleteFeatureGroup.clearLayers();
   }
 
+  function sameLatLng(latlng1, latlng2) {
+    if (latlng1[0] === latlng2[0] && latlng1[1] === latlng2[1]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   /**
    * 顯示前五名的資料
    * @param {*} datalist 前五名的資料
    */
   function show5TopData(datalist) {
-    datalist.forEach((data, index) => {
+    //檢查排除座標重複的地點
+    const fiveTopList = [];
+    for (let i = 0; i < datalist.length; i++) {
+      const element = datalist[i];
+      const latlng = [element.latitude, element.longitude];
+      let flag = false;
+      fiveTopList.forEach((element) => {
+        const eachLatLng = [element.latitude, element.longitude];
+        if (sameLatLng(latlng, eachLatLng)) {
+          flag = true;
+        }
+      });
+      if (flag === false && fiveTopList.length < 5) {
+        fiveTopList.push(element);
+      }
+    }
+    fiveTopList.forEach((data, index) => {
       const latlng = [data.latitude, data.longitude];
       const houseHtml = `
       <div class="card">
           <div class="card-body">
-            <h5 class="card-title">
-            ${data["house_id"]}-
-            ${
-              data["house_title"] || data["house_desc"]
-            }</h5>
+            <h5 class="card-title"></h5>
+            ${data["house_title"] || data["house_desc"]}</h5>
             <p class="card-text">
               位置:${data["house_address"]}<br>
               大小:${data["house_area"]}<br>
@@ -271,10 +293,8 @@
       $(pin).on("click", housePinEvent);
       houseFeatureGroup.addLayer(pin);
       map.addLayer(houseFeatureGroup);
-    })
+    });
   }
-
-
 
   //事件區
   //現在點的房屋
@@ -289,7 +309,6 @@
   let houseFeatureGroup = new L.featureGroup();
   //設施的圖層
   let facilitiesFeatureGroup = new L.featureGroup();
-
 
   //房屋點事件
   function housePinEvent(e) {
@@ -426,8 +445,6 @@
     map.removeLayer(houseFeatureGroup);
     houseFeatureGroup = new L.featureGroup();
 
-
-    let houseTop5;
     switch (rankingType) {
       case "distance":
         //處裡距離排序
@@ -441,8 +458,7 @@
           return 0;
         }
         houseData.sort(distenceCompare);
-        houseTop5 = houseData.slice(0, 5);
-        show5TopData(houseTop5);
+        show5TopData(houseData);
         break;
       case "rent":
         //處理租金排序
@@ -457,8 +473,7 @@
         }
 
         houseData.sort(rantalCompare);
-        houseTop5 = houseData.slice(0, 5);
-        show5TopData(houseTop5);
+        show5TopData(houseData);
         break;
       case "event":
         //處理危險排序
@@ -472,12 +487,11 @@
           return 0;
         }
         houseData.sort(dangerousCompare);
-        houseTop5 = houseData.slice(0, 5);
-        show5TopData(houseTop5);
+        show5TopData(houseData);
         break;
 
       default:
-        alert("請選擇一種排序")
+        alert("請選擇一種排序");
         break;
     }
     $("#rankingWindow").modal("hide");
