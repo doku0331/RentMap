@@ -44,7 +44,7 @@ distenceRank = houseData.map((data) => {
     distence: data.distinceToSchool,
   };
 });
-console.log("距離排序", houseData);
+console.log("距離排序", distenceRank);
 
 //處理租金排序
 function rantalCompare(a, b) {
@@ -66,7 +66,7 @@ rentRank = houseData.map((data) => {
     distence: data.distinceToSchool,
   };
 });
-console.log("租金排序", houseData);
+console.log("租金排序", rentRank);
 
 //處理危險排序
 function dangerousCompare(a, b) {
@@ -88,4 +88,4 @@ dangerousRank = houseData.map((data) => {
     distence: data.distinceToSchool,
   };
 });
-console.log("危險排序", houseData);
+console.log("危險排序", dangerousRank);
