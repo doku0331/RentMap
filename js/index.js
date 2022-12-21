@@ -229,6 +229,10 @@
    * 清除點選房屋產生的東西
    */
   function clearPinClick() {
+    if (nowClickPin) {
+      nowClickPin.closePopup();
+      map.removeLayer(nowClickPin);
+    }
     nowClickPin = null;
     eventArray = [];
     $infoCardBlock.children().remove();
