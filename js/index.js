@@ -288,7 +288,7 @@
         latlng,
         data.address,
         houseHtml,
-        Icons.REDICON
+        index + 9
       );
       $(pin).on("click", housePinEvent);
       houseFeatureGroup.addLayer(pin);

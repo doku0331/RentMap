@@ -7,7 +7,12 @@ const Icons = {
   MOTORCYCLEICON: 6,
   THIEFICON: 7,
   HOUSEICON: 8,
-  DEFAULT: 9,
+  ONE: 9,
+  TWO: 10,
+  THREE: 11,
+  FOUR: 12,
+  FIVE: 13,
+  DEFAULT: 14,
 };
 
 /**
@@ -64,7 +69,26 @@ function MapHelper(map) {
     iconUrl: "img/thief-svgrepo-com.svg",
     iconSize: [30, 30],
   });
-
+  var oneIcon = new L.Icon({
+    iconUrl: "img/digit-one-svgrepo-com.svg",
+    iconSize: [30, 30],
+  });
+  var twoIcon = new L.Icon({
+    iconUrl: "img/digit-two-svgrepo-com.svg",
+    iconSize: [30, 30],
+  });
+  var threeIcon = new L.Icon({
+    iconUrl: "img/digit-three-svgrepo-com.svg",
+    iconSize: [30, 30],
+  });
+  var fourIcon = new L.Icon({
+    iconUrl: "img/digit-four-svgrepo-com.svg",
+    iconSize: [30, 30],
+  });
+  var fiveIcon = new L.Icon({
+    iconUrl: "img/digit-five-svgrepo-com.svg",
+    iconSize: [30, 30],
+  });
   /**
    * 飛到指定位置
    * @param {Array} latlng 座標
@@ -205,6 +229,21 @@ function MapHelper(map) {
         break;
       case Icons.HOUSEICON:
         PinIcon = houseIcon;
+        break;
+      case Icons.ONE:
+        PinIcon = oneIcon;
+        break;
+      case Icons.TWO:
+        PinIcon = twoIcon;
+        break;
+      case Icons.THREE:
+        PinIcon = threeIcon;
+        break;
+      case Icons.FOUR:
+        PinIcon = fourIcon;
+        break;
+      case Icons.FIVE:
+        PinIcon = fiveIcon;
         break;
       default:
         PinIcon = "";
