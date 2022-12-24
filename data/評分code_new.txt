@@ -1,0 +1,103 @@
+import json 
+with open('./cycuRankingData.json') as f:
+    data = json.load(f)
+#print(len(data['distence']))
+#print(data['distence'][0])
+#print(len(data['rental']))
+#print(type(data))
+data['rental'][0]['rank']=1
+#print(data['rental'][0])
+num=int(len(data['distence'])/10)
+#print(num)
+lengh=int(len(data['distence'])-1)
+for i in range(0,lengh):
+    if i<2*num :
+        data['rental'][i]['rank']=1
+        data['distence'][i]['rank']=1
+        data['dangerous'][i]['rank']=1
+    elif i>=2*num and i<3*num:
+        data['rental'][i]['rank']=0.9
+        data['distence'][i]['rank']=0.9
+        data['dangerous'][i]['rank']=0.9
+    elif i>=3*num and i<4*num:
+        data['rental'][i]['rank']=0.8
+        data['distence'][i]['rank']=0.8
+        data['dangerous'][i]['rank']=0.8
+    elif i>=4*num and i<5*num:
+        data['rental'][i]['rank']=0.7
+        data['distence'][i]['rank']=0.7
+        data['dangerous'][i]['rank']=0.7
+    elif i>=5*num and i<6*num:
+        data['rental'][i]['rank']=0.6
+        data['distence'][i]['rank']=0.6
+        data['dangerous'][i]['rank']=0.6
+    elif i>=6*num and i<7*num:
+        data['rental'][i]['rank']=0.5
+        data['distence'][i]['rank']=0.5
+        data['dangerous'][i]['rank']=0.5
+    elif i>=7*num and i<8*num:
+        data['rental'][i]['rank']=0.4
+        data['distence'][i]['rank']=0.4
+        data['dangerous'][i]['rank']=0.4
+    elif i>=8*num and i<9*num:
+        data['rental'][i]['rank']=0.3
+        data['distence'][i]['rank']=0.3
+        data['dangerous'][i]['rank']=0.3
+    elif i>=9*num and i<10*num:
+        data['rental'][i]['rank']=0.2
+        data['distence'][i]['rank']=0.2
+        data['dangerous'][i]['rank']=0.2
+    else:
+        data['rental'][i]['rank']=0.1
+        data['distence'][i]['rank']=0.1
+        data['dangerous'][i]['rank']=0.1
+
+#print(data['rental'][170]['rank'])
+
+ranklist=[]
+weightfordistance=[]
+weightforrental=[]
+weightfordangerous=[]
+
+for i in range(0,lengh):
+    for j in range(0,lengh):
+        for z in range(0,lengh):
+            if data['rental'][i]['id']==data['distence'][j]['id'] and data['distence'][j]['id']==data['dangerous'][z]['id']:
+                # print(data['rental'][i]['id'], data['rental'][i]['rank'])
+                # print(data['distence'][j]['id'],data['distence'][j]['rank'])
+                # print(data['dangerous'][z]['id'],data['dangerous'][z]['rank'])
+                m=0.3333*data['rental'][i]['rank']+0.3333*data['distence'][j]['rank']+0.3333*data['dangerous'][z]['rank']
+                s1=0.6666*data['rental'][i]['rank']+0.16665*data['distence'][j]['rank']+0.16665*data['dangerous'][z]['rank']
+                s2=0.16665*data['rental'][i]['rank']+0.6666*data['distence'][j]['rank']+0.16665*data['dangerous'][z]['rank']
+                s3=0.16665*data['rental'][i]['rank']+0.16665*data['distence'][j]['rank']+0.6666*data['dangerous'][z]['rank']
+                #print(data['rental'][i]['id'],m)
+                #n=m*data['dangerous'][z]['rank']
+                temp=[]
+                temp.append(data['rental'][i]['id'])
+                temp.append(m)
+                ranklist.append(temp)
+
+                temp1=[]
+                temp1.append(data['rental'][i]['id'])
+                temp1.append(s1)
+                weightforrental.append(temp1)
+
+                temp2=[]
+                temp2.append(data['rental'][i]['id'])
+                temp2.append(s2)
+                weightfordistance.append(temp2)
+
+                temp3=[]
+                temp3.append(data['rental'][i]['id'])
+                temp3.append(s3)
+                weightfordangerous.append(temp3)
+
+#print(ranklist[0][0])
+ranklist.sort(key=lambda x:x[1],reverse=True)
+weightfordistance.sort(key=lambda x:x[1],reverse=True)
+weightfordangerous.sort(key=lambda x:x[1],reverse=True)
+weightforrental.sort(key=lambda x:x[1],reverse=True)
+print('無加權',ranklist[:5])
+print('租金加權',weightforrental[:5])
+print('危險數加權',weightfordangerous[:5])
+print('租金加權',weightfordistance[:5])

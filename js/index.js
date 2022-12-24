@@ -9,6 +9,7 @@
   let dangerousData;
   let schoolCorrdinate;
   let houseUrl;
+  let weightData;
   $(document).ready(function () {
     initMap();
     loadData("YZU");
@@ -71,6 +72,7 @@
     facilitiesData = setting.facilities;
     dangerousData = setting.dangerous;
     schoolCorrdinate = setting.coordinate;
+    weightData = setting.weightData;
   }
 
   /**
@@ -493,11 +495,46 @@
         houseData.sort(dangerousCompare);
         show5TopData(houseData);
         break;
-
+      case "noWeighted":
+        const noWeightedList = [];
+        weightData.noWeighted.forEach((data) => {
+          let id = data[0];
+          noWeightedList.push(convertHouseIdToHouseData(id));
+        });
+        show5TopData(noWeightedList);
+        break;
+      case "rentWeighted":
+        const rentWeightedList = [];
+        weightData.rentWeighted.forEach((data) => {
+          let id = data[0];
+          rentWeightedList.push(convertHouseIdToHouseData(id));
+        });
+        show5TopData(rentWeightedList);
+        break;
+      case "distanceWeighted":
+        const distanceWeightedList = [];
+        weightData.distanceWeighted.forEach((data) => {
+          let id = data[0];
+          distanceWeightedList.push(convertHouseIdToHouseData(id));
+        });
+        show5TopData(distanceWeightedList);
+        break;
+      case "eventWeighted":
+        const eventWeightedList = [];
+        weightData.eventWeighted.forEach((data) => {
+          let id = data[0];
+          eventWeightedList.push(convertHouseIdToHouseData(id));
+        });
+        show5TopData(eventWeightedList);
+        break;
       default:
         alert("請選擇一種排序");
         break;
     }
     $("#rankingWindow").modal("hide");
   });
+
+  function convertHouseIdToHouseData(id) {
+    return houseData.find((element) => element.house_id === id);
+  }
 })($);
