@@ -1,4 +1,4 @@
-var yzuCoordinate = [24.9703173, 121.2612535];
+var yzuCoordinate = [24.9701475, 121.26348200000007];
 var yzuWeightedData = {
   noWeighted: [
     [8029, 0.9665699999999999],
@@ -4604,5 +4604,4 @@ var yzuSetting = {
   houseData: yzuHouseData,
   dangerous: taoyuanDangerousData,
   facilities: yzuFacilitiesData,
-  weightData: yzuWeightedData,
 };

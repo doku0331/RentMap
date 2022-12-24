@@ -84,16 +84,22 @@
     //設定點
     for (const index in houseData) {
       const data = houseData[index];
-      if (!data["latitude"] || !data["longitude"]) {
+      const latLng = [data["latitude"], data["longitude"]];
+      if (
+        !data["latitude"] ||
+        !data["longitude"] ||
+        sameLatLng(latLng, schoolCorrdinate)
+      ) {
         continue;
       }
-      const latLng = [data["latitude"], data["longitude"]];
+
       const houseHtml = `
         <div class="card">
             <div class="card-body">
-            <h5 class="card-title">${
-              data["house_title"] || data["house_desc"]
-            }</h5>              
+            <h5 class="card-title">
+            ${data["house_id"]}-${
+        data["house_title"] || data["house_desc"]
+      }</h5>              
             <p class="card-text">
                 位置:${data["house_address"]}<br>
                 大小:${data["house_area"]}<br>
@@ -242,7 +248,7 @@
   }
 
   function sameLatLng(latlng1, latlng2) {
-    if (latlng1[0] === latlng2[0] && latlng1[1] === latlng2[1]) {
+    if (latlng1[0] == latlng2[0] && latlng1[1] == latlng2[1]) {
       return true;
     } else {
       return false;
@@ -258,15 +264,22 @@
     const fiveTopList = [];
     for (let i = 0; i < datalist.length; i++) {
       const element = datalist[i];
-      const latlng = [element.latitude, element.longitude];
+      const latLng = [element.latitude, element.longitude];
       let flag = false;
-      fiveTopList.forEach((element) => {
-        const eachLatLng = [element.latitude, element.longitude];
-        if (sameLatLng(latlng, eachLatLng)) {
+      fiveTopList.forEach((data) => {
+        const eachLatLng = [data.latitude, data.longitude];
+        if (
+          sameLatLng(latLng, eachLatLng) ||
+          sameLatLng(latLng, schoolCorrdinate)
+        ) {
           flag = true;
         }
       });
-      if (flag === false && fiveTopList.length < 5) {
+      if (
+        flag === false &&
+        fiveTopList.length < 5 &&
+        !sameLatLng(latLng, schoolCorrdinate)
+      ) {
         fiveTopList.push(element);
       }
     }
