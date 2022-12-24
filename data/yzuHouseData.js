@@ -4604,4 +4604,5 @@ var yzuSetting = {
   houseData: yzuHouseData,
   dangerous: taoyuanDangerousData,
   facilities: yzuFacilitiesData,
+  weightData: yzuWeightedData,
 };
